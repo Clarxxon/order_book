@@ -8,7 +8,7 @@ from models import Order
 
 app = FastAPI()
 
-# Хранилище активных WebSocket-соединений
+
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
@@ -51,14 +51,6 @@ last_price = 0
 async def process_order(order: Order):
     logger.info("process order...")
     await manager.broadcast("Hello, WebSocket World!")
-    # if order.price:
-    #     if not order.price in order_book[order.type]:
-    #         order_book[order.type][order.price] = 0
-    #     order_book[order.type][order.price] += order.volume
-    #
-    #     logger.info(order_book)
-    # else:
-    #     pass
 
     lookup_type = "ask"
     if order.type == "ask":
@@ -102,40 +94,6 @@ async def process_order(order: Order):
         order_book[order.type][order.price] += needet_volume
 
     return "part done"
-
-
-# HTML-страница для тестирования
-@app.get("/")
-async def get():
-    return HTMLResponse("""
-        <html>
-            <head>
-                <title>WebSocket Demo</title>
-            </head>
-            <body>
-                <h1>FastAPI WebSocket Demo</h1>
-                <button onclick="connectWebSocket()">Connect</button>
-                <button onclick="callHello()">Call Hello World</button>
-                <div id="messages"></div>
-                <script>
-                    let ws;
-
-                    function connectWebSocket() {
-                        ws = new WebSocket("ws://localhost:8000/ws");
-
-                        ws.onmessage = function(event) {
-                            const messages = document.getElementById('messages');
-                            messages.innerHTML += `<p>${event.data}</p>`;
-                        };
-                    }
-
-                    function callHello() {
-                        fetch('/hello-world');
-                    }
-                </script>
-            </body>
-        </html>
-    """)
 
 
 @app.get("/order_book")
