@@ -1,7 +1,7 @@
+from enum import Enum
 from typing import List
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
 
 from config import logger
 from models import Order
@@ -47,6 +47,10 @@ order_book = {
 
 last_price = 0
 
+# TODO replace magic strings
+class OrderSide(Enum):
+    BUY = "buy"
+    SELL = "sell"
 
 async def process_order(order: Order):
     logger.info("process order...")
